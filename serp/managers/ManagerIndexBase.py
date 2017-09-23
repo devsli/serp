@@ -7,16 +7,23 @@ class ManagerIndexBase(object):
     def __init__(self, erp):
         self.erp = erp
 
-    def __getitem__(self, name:str):
+    def __getitem__(self, idx):
+        if type(idx) is int:
+            # Special case for for-loop
+            # TODO: replace with iterator
+            return self.all()[idx]
+
+        name = idx
         if not name.startswith(self.typ):
             name = join_table_name(self.typ, name)
+
         return self.manager(self.erp, name)
 
     def all(self):
         return [self[name] for name in self.list_tables(self.typ)
                 if parse_table_name(name)[2] == None]
 
-    def list_tables(self, ext = None):
+    def list_tables(self, ext=None):
         query = "SELECT name FROM sqlite_master WHERE type='table'"
 
         if ext is not None:

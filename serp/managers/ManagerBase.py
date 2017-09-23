@@ -1,11 +1,11 @@
+from serp.exc import ItemNotFoundException
 from serp.utils import parse_table_name
 
 class ManagerBase(object):
-
-    def __init__(self, erp, tablename):
+    def __init__(self, erp, tablename:str):
         self.erp = erp
         self.tablename = tablename
-        (self.typ, self.name, self.ext) = parse_table_name(tablename)
+        self.typ, self.name, self.ext = parse_table_name(tablename)
         self.human_name = format_system_name(self.name)
 
     def __repr__(self):
@@ -24,7 +24,7 @@ class ManagerBase(object):
         c.execute('SELECT * FROM \'{}\' WHERE rowid = ?;'.format(self.tablename), (id, ))
         data = c.fetchone()
         if data is None:
-            raise Exception({
+            raise ItemNotFoundException({
                 "message": "Item not found",
                 "section": self,
                 "id": id
@@ -34,5 +34,5 @@ class ManagerBase(object):
         entity.load(c.fetchone())
         return entity
 
-def format_system_name(name):
+def format_system_name(name:str):
     return name.capitalize().replace('_', ' ')
