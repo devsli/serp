@@ -1,0 +1,2 @@
+from .CatalogManagerIndex import CatalogManagerIndex
+from .DocumentManagerIndex import DocumentManagerIndex

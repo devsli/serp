@@ -1,0 +1,62 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE "cat.markets" (name varchar, comment varchar);
+INSERT INTO "cat.markets" VALUES('Worldwide','');
+INSERT INTO "cat.markets" VALUES('Germany',NULL);
+CREATE TABLE "cat.stores" (name varchar, comment varchar);
+INSERT INTO "cat.stores" VALUES('Primary','Demo store');
+INSERT INTO "cat.stores" VALUES('Secondary','Demo store');
+CREATE TABLE "cat.products" (name varchar, comment varchar);
+INSERT INTO "cat.products" VALUES('Keyboard','');
+INSERT INTO "cat.products" VALUES('Mouse',NULL);
+INSERT INTO "cat.products" VALUES('Display',NULL);
+CREATE TABLE "acc.products_stocks" (
+       "doctype" varchar,
+       "docref" integer,
+       "date" datetime DEFAULT CURRENT_TIMESTAMP,
+       "product_id" integer,
+       "stock_id" integer,
+       "diff" integer,
+
+       FOREIGN KEY("product_id") REFERENCES "cat.products"(rowid),
+       FOREIGN KEY("stock_id") REFERENCES "cat.stores"(rowid)
+);
+INSERT INTO "acc.products_stocks" VALUES('doc.product_found',1,'2017-07-01 10:45:17',1,1,5);
+INSERT INTO "acc.products_stocks" VALUES('doc.product_lost',1,'2017-07-01 10:45:17',1,1,-5);
+INSERT INTO "acc.products_stocks" VALUES('doc.product_lost',1,'2017-07-01 10:45:17',1,2,-5);
+CREATE TABLE "doc.product_found" (
+       "date" datetime DEFAULT CURRENT_TIMESTAMP,
+       "comment" varchar,
+       "author" integer,
+       "owner" integer,
+       "active" integer DEFAULT 0
+);
+INSERT INTO "doc.product_found" VALUES('2017-07-01 10:45:17','Sample document',NULL,NULL,0);
+CREATE TABLE "doc.product_lost" (
+       "date" datetime DEFAULT CURRENT_TIMESTAMP,
+       "comment" varchar,
+       "author" integer,
+       "owner" integer,
+       "active" integer DEFAULT 0
+);
+INSERT INTO "doc.product_lost" VALUES('2017-07-01 10:45:17','Sample document',NULL,NULL,0);
+CREATE TABLE "doc.product_found.items" (
+       "doc_id" varchar,
+       "lineno" integer,
+       "product_id" integer,
+       "stock_id" integer,
+       "amount" integer,
+
+       foreign key("doc_id") references "doc.product_found"(rowid)
+);
+INSERT INTO "doc.product_found.items" VALUES('1',1,1,1,5);
+CREATE TABLE "doc.product_lost.items" (
+      "doc_id" varchar NOT NULL,
+      "lineno" integer NOT NULL,
+      "product_id" integer NOT NULL,
+      "stock_id" integer NOT NULL,
+      "amount" integer NOT NULL
+);
+INSERT INTO "doc.product_lost.items" VALUES('1',1,1,1,5);
+INSERT INTO "doc.product_lost.items" VALUES('1',2,1,2,5);
+COMMIT;
