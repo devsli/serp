@@ -10,6 +10,3 @@ def join_table_name(typ, name, ext=None):
     if ext is not None:
         result += '.' + ext
     return result
-
-def fetch_first_column(fetch_result):
-    return [x[0] for x in fetch_result]
